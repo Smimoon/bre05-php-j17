@@ -6,7 +6,7 @@
 
 
 class User{
-    public function __construct(private string $username, private string $email, private string $password, private string $role, private string $created_at = new DateTime(), private ? int $id = NULL)
+    public function __construct(private string $username, private string $email, private string $password, private string $role = "User", private DateTime $created_at = new DateTime(), private ? int $id = NULL)
     {
     
         
@@ -57,7 +57,7 @@ class User{
         $this->created_at = $created_at;
     }
     
-    public function getId():id
+    public function getId():int
     {
         return $this->id;
     }

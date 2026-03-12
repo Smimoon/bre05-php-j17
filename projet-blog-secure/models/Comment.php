@@ -6,7 +6,7 @@
 
 
 class Comment{
-    public function __construct(private string $content, private string $user_id, private string $post_id, private ? int $id=NULL)
+    public function __construct(private string $content, private User $user_id, private Post $post_id, private ? int $id=NULL)
     {
         
     }
@@ -20,20 +20,20 @@ class Comment{
         $this->title = $content;
     }
     
-     public function getUserId():string
+     public function getUserId():User
     {
         return $this->user_id;
     }
-    public function setUserId(string $user_id):void
+    public function setUserId(User $user_id):void
     {
         $this->title = $user_id;
     }
     
-     public function getPostId():string
+     public function getPostId():Post
     {
         return $this->post_id;
     }
-    public function setPostId(string $post_id):void
+    public function setPostId(Post $post_id):void
     {
         $this->title = $post_id;
     }

@@ -14,11 +14,9 @@ class PostManager extends AbstractManager{
     public function findLatest():array
     {
         $query = $this->db->prepare(
-            'SELECT posts.*, users.username FROM posts
-            JOIN users
-            ON posts.author = users.id
+            'SELECT posts.* FROM posts
             ORDER BY created_at
-            DESC LIMIT 4'
+            LIMIT 4'
         );
         
         $query->execute();
@@ -26,7 +24,12 @@ class PostManager extends AbstractManager{
         $posts = [];
         if($results !== false){
             foreach($results as $result){
-                $posts[] = new Post($result["title"], $result["excerpt"], $result["content"], $result["username"], $result["created_at"], $result["id"]);
+                $userManager = new UserManager();
+                $user = $userManager->findOne($result["author"]);
+                
+                $categoryManager = new CategoryManager();
+                $categories = $categoryManager->findByPost($result["id"]);
+                $posts[] = new Post($result["title"], $result["excerpt"], $result["content"], $user, DateTime::createFromFormat('Y-m-d H:i:s', $result["created_at"]), $categories, $result["id"]);
             }
             return $posts;
         }
@@ -35,23 +38,27 @@ class PostManager extends AbstractManager{
         }
     }
     
-    public function findOne(int $id):Post
+    public function findOne(int $postId):Post
     {
         $query = $this->db->prepare(
-            'SELECT posts.*, users.username FROM posts
-            JOIN users
-            ON posts.author = users.id
+            'SELECT posts.* FROM posts
             WHERE posts.id = :id'
         );
         $parameters = [
-            'id' => $id
+            'id' => $postId
         ];
         
         $query->execute($parameters);
         $result = $query->fetch(PDO::FETCH_ASSOC);
         
         if($result !== false){
-            $post = new Post($result["title"], $result["excerpt"], $result["content"], $result["username"], $result["created_at"], $result["id"]);
+            $userManager = new UserManager();
+            $user = $userManager->findOne($result["author"]);
+            
+            $categoryManager = new CategoryManager();
+            $categories = $categoryManager->findByPost($result["id"]);
+            
+            $post = new Post($result["title"], $result["excerpt"], $result["content"], $user, DateTime::createFromFormat('Y-m-d H:i:s', $result["created_at"]), $categories, $result["id"]);
             return $post;
         }
         else {
@@ -62,10 +69,8 @@ class PostManager extends AbstractManager{
     public function findByCategory(int $categoryId):array
     {
         $query = $this->db->prepare(
-            'SELECT posts.*, users.username
+            'SELECT posts.*
             FROM posts
-            JOIN users
-            ON posts.author = users.id
             JOIN posts_categories
             ON posts.id = posts_categories.post_id
             WHERE posts_categories.category_id = :id'
@@ -79,7 +84,13 @@ class PostManager extends AbstractManager{
         $posts = [];
         if($results !== false){
             foreach($results as $result){
-                $posts[] = new Post($result["title"], $result["excerpt"], $result["content"], $result["username"], $result["created_at"], $result["id"]);
+                $userManager = new UserManager();
+                $user = $userManager->findOne($result["author"]);
+                
+                $categoryManager = new CategoryManager();
+                $categories = $categoryManager->findByPost($result["id"]);
+                
+                $posts[] = new Post($result["title"], $result["excerpt"], $result["content"], $user, DateTime::createFromFormat('Y-m-d H:i:s', $result["created_at"]), $categories, $result["id"]);
             }
             return $posts;
         }

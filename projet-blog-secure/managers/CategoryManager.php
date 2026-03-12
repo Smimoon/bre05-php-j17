@@ -18,7 +18,7 @@ class CategoryManager extends AbstractManager{
             'id'=>$id    
         ];
         
-        $query->execute($parameter);
+        $query->execute($parameters);
         $result = $query->fetch(PDO::FETCH_ASSOC);
         
         if($result !== false){
@@ -54,7 +54,7 @@ class CategoryManager extends AbstractManager{
         $query = $this->db->prepare(
         'SELECT categories.* FROM categories
         JOIN posts_categories
-        ON categories.id = posts_categories.category.id
+        ON categories.id = posts_categories.category_id
         WHERE posts_categories.post_id = :id'    
         );
         $parameters = [

@@ -6,7 +6,8 @@
 
 
 class Post{
-    public function __construct(private string $title, private string $excerpt, private string $content, private string $author, private string $created_at = new DateTime(), private ? int $id=NULL)
+    
+    public function __construct(private string $title, private string $excerpt, private string $content, private User $author, private DateTime $created_at = new DateTime(), private array $categories = [], private ? int $id=NULL)
     {
         
     }
@@ -37,11 +38,11 @@ class Post{
         $this->title = $content;
     }
     
-    public function getAuthor():string
+    public function getAuthor():User
     {
         return $this->author;
     }
-    public function setAuthor(string $author):void
+    public function setAuthor(User $author):void
     {
         $this->title = $author;
     }
@@ -55,12 +56,21 @@ class Post{
         $this->created_at = $created_at;
     }
     
-    public function getId():id
+    public function getId():int
     {
         return $this->id;
     }
     public function setId(int $id):void
     {
         $this->id = $id;
+    }
+    
+    public function getCategories():array
+    {
+        return $this->categories;
+    }
+    public function setCategories(array $categories):void
+    {
+        $this->categories = $categories;
     }
 }
